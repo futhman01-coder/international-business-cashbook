@@ -164,5 +164,109 @@ main {
     </div>
   </div>
   </section>
+  <script>
+let transactions = JSON.parse(
+  localStorage.getItem("businessTransactions") || "[]"
+);
+
+function formatMoney(amount) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+  }).format(amount);
+}
+
+function updateDashboard() {
+  let income = 0;
+  let expenses = 0;
+
+  transactions.forEach(transaction => {
+    if (transaction.type === "income") {
+      income += transaction.amount;
+    } else {
+      expenses += transaction.amount;
+    }
+  });
+
+  let profit = income - expenses;
+
+  document.getElementById("income").textContent =
+    formatMoney(income);
+
+  document.getElementById("expenses").textContent =
+    formatMoney(expenses);
+
+  document.getElementById("profit").textContent =
+    formatMoney(profit);
+
+  document.getElementById("balance").textContent =
+    formatMoney(profit);
+
+  let list = document.getElementById("transactionList");
+  list.innerHTML = "";
+
+  if (transactions.length === 0) {
+    list.innerHTML = `
+      <tr>
+        <td colspan="4" style="padding:12px;">
+          No transactions recorded yet.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  transactions.forEach(transaction => {
+    let row = document.createElement("tr");
+
+    [
+      transaction.date,
+      transaction.description,
+      transaction.type,
+      formatMoney(transaction.amount)
+    ].forEach(value => {
+      let cell = document.createElement("td");
+      cell.style.padding = "10px";
+      cell.style.borderBottom = "1px solid #eee";
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+
+    list.appendChild(row);
+  });
+}
+
+function addTransaction() {
+  let type = document.getElementById("type").value;
+  let description = document.getElementById("description").value.trim();
+  let amount = Number(document.getElementById("amount").value);
+  let date = document.getElementById("date").value;
+
+  if (!description || !date || !Number.isFinite(amount) || amount <= 0) {
+    alert("Please enter a description, date and valid amount.");
+    return;
+  }
+
+  transactions.push({
+    type,
+    description,
+    amount,
+    date
+  });
+
+  localStorage.setItem(
+    "businessTransactions",
+    JSON.stringify(transactions)
+  );
+
+  document.getElementById("description").value = "";
+  document.getElementById("amount").value = "";
+
+  updateDashboard();
+
+  alert("Transaction saved successfully!");
+}
+
+updateDashboard();
+  </script>
 </body>
   </html>
