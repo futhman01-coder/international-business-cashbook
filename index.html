@@ -112,5 +112,31 @@ main {
 
   </section>
   </main>
+  <section class="section">
+  <div class="card">
+    <h2>Record a Transaction</h2>
+
+    <label>Transaction Type</label>
+    <select id="type">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+
+    <label>Description</label>
+    <input type="text" id="description"
+      placeholder="What was the transaction for?">
+
+    <label>Amount</label>
+    <input type="number" id="amount"
+      placeholder="Enter amount">
+
+    <label>Date</label>
+    <input type="date" id="date">
+
+    <button type="button" onclick="addTransaction()">
+      Save Transaction
+    </button>
+  </div>
+  </section>
 </body>
   </html>
